@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Place Autocomplete</title>
+    <title>DigiMap - Beta</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
@@ -53,26 +53,62 @@
         font-size: 13px;
         font-weight: 300;
       }
+
+      #captures {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        height: 200px;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+        border: 1px solid rgba(0,0,0,1);
+        background: rgba(0,0,0, .7);
+      }
+
+      #captures img{
+        position: relative;
+        float: left;
+        margin: 5px;
+        width: 190px;
+        height: 190px;
+      }
 }
 
     </style>
+    <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 
     <script>
 function initialize() {
   var mapOptions = {
-    center: new google.maps.LatLng(-33.8688, 151.2195),
-    zoom: 13
+    center: new google.maps.LatLng(39.9157729,-104.9838554),
+    zoom: 20,
+    scrollwheel: true,
+    scaleControl: true,
+    navigationControl: true,
+    draggable: true,
+    zoomControl: true,
+    panControl: true,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    streetViewControl: false,
+    mapTypeControl: true
   };
+
   var map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
+
+  google.maps.event.addListener(map, "click", function(event) {
+    var lat = event.latLng.lat();
+    var lng = event.latLng.lng();
+    mapScreenCapture(lat,lng);
+  });
 
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('pac-input'));
 
   var types = document.getElementById('type-selector');
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
 
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
@@ -130,28 +166,32 @@ function initialize() {
     });
   }
 
-  setupClickListener('changetype-all', []);
-  setupClickListener('changetype-establishment', ['establishment']);
-  setupClickListener('changetype-geocode', ['geocode']);
+  function mapScreenCapture(lat,lng){
+    var tomnodCaptureURL = 'http://dev1.tomnod.com/chip_api/chip/lat/'+lat+'/lng/'+lng; 
+    var capture = document.getElementById('capture01').src = tomnodCaptureURL;
+    console.log(tomnodCaptureURL);
+    console.log('Taking Screen Shot of [lat]:'+lat+' | [lng]:'+lng+' at: ' + tomnodCaptureURL);
+
+  }
+
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
+
     </script>
+    <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
   </head>
   <body>
     <input id="pac-input" class="controls" type="text"
         placeholder="Enter a location">
-    <div id="type-selector" class="controls">
-      <input type="radio" name="type" id="changetype-all" checked="checked">
-      <label for="changetype-all">All</label>
-
-      <input type="radio" name="type" id="changetype-establishment">
-      <label for="changetype-establishment">Establishments</label>
-
-      <input type="radio" name="type" id="changetype-geocode">
-      <label for="changetype-geocode">Geocodes</label>
-    </div>
+   
     <div id="map-canvas"></div>
+    <div id="captures">
+      <img src="" id="capture01">      
+    </div>
+  <!-- Included JS Files -->
+  
   </body>
 </html>
