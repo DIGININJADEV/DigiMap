@@ -22,9 +22,8 @@ function mapScreenCapture(lat,lng){
 function addImageListeners(){
 	$("#captures img").off();
 	$("#captures img").on( "click", function() {
-		console.log($captures);
 		$src = $(this).attr('src');
-		console.log('Ive been clicked: '+$src);
+		
 		/*
 		$.magnificPopup.open({
 	  items: {
@@ -34,21 +33,20 @@ function addImageListeners(){
 		});
 		*/
 
-		var testArr = [
-		      {
-		        src: 'http://dev1.tomnod.com/chip_api/chip/lat/39.91592439575713/lng/-104.98388707637787'
-		      },
-		      {
-		        src: 'http://dev1.tomnod.com/chip_api/chip/lat/39.91582547788627/lng/-102.98382806777954',
-		      },
-		    ];
-
+		var tempArr = [];
+		for(i=($captures.length - 1);i>-1;i--){
+			var tempObj = {
+				src: $captures[i].URL
+			}
+			tempArr.push(tempObj);			
+		}
+		console.log(tempArr);
 		$.magnificPopup.open({
-		    items: testArr,
+		    items: tempArr,
 		    gallery: {
 		      enabled: true
 		    },
-		    type: 'image' // this is default type
+		    type: 'image' 
 		});
 		
 	});

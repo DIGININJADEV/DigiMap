@@ -19,7 +19,7 @@ line-height: 22px;
 padding:0px;
 margin:0px; 
 }
-#map-canvas {
+#map_canvas {
   position: relative;
   margin: 0 auto;
   height: 800px;
@@ -115,4 +115,36 @@ margin:0px;
   border: 2px ridge rgba(255,255,255,1);
   border-radius: 5px;
   cursor: pointer;
+}
+
+.marker {
+  position: absolute;
+  background-image: url('marker.png');
+  width: 32px;
+  height: 37px;
+  margin-left: -16px;
+  margin-top: -37px;
+}
+
+.marker.xselectable-selected {
+  background-image: url('marker-selected.png');
+}
+
+.xselectable-glass {
+  background-color: transparent;
+  z-index: 1000;
+  cursor: hand;
+  cursor: pointer;
+}
+
+.xselectable-box {
+  border: 1px dotted black;
+  background-color: rgba(11, 178, 87, 0.5);
+  cursor: hand;
+  cursor: pointer;
+}
+
+.xselectable-box-selected {
+  background-color: rgba(108, 121, 223, 0.5);
+  border: 2px solid black;
 }
