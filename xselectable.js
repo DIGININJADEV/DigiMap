@@ -849,7 +849,7 @@
       'left': $currentSelection.left,
       'height': $currentSelection.height,
       'width': $currentSelection.width,
-      'overflow': 'hidden'}).appendTo("#map_canvas");   
+      'overflow': 'hidden'}).appendTo("#figure");   
     }
 
 
