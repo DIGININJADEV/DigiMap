@@ -1,44 +1,77 @@
 $(document).ready(function(){
 	$captures = [],
-	selectedImgID = '';
+	selectedImgID = '',
+	toggleCaptures = true,
+	allowScreenCapture = true,
+	h = window.innerHeight;
+	adjustViewport(h);
+	addListeners();
 });
 
-function mapScreenCapture(lat,lng){
-	$tomnodCaptureURL = 'http://dev1.tomnod.com/chip_api/chip/lat/'+lat+'/lng/'+lng; 
-	$UID = Date.now();
-	$captureObj = {
-		ID:  $UID,
-		URL: $tomnodCaptureURL,
-		Lat: lat,
-		Lng: lng
-	};
+function adjustViewport(height){
+	var padding = ((parseInt(height) - 760) / 2);
+	console.log('Height:'+height);
+	console.log('Padding:'+padding);
+	$('#container').css('top',padding+'px');
+}
 
-	$captures.push($captureObj);
-	console.log($captureObj);
+function mapScreenCapture(coords){
+	if(allowScreenCapture){
+		$tomnodCaptureURL = 'http://dev1.tomnod.com/chip_api/chip/lat/'+coords.Lat+'/lng/'+coords.Lng; 
+		$UID = Date.now();
+		$captureObj = {
+			ID:  $UID,
+			URL: $tomnodCaptureURL,
+			Lat: coords.Lat,
+			Lng: coords.Lng
+		};
 
-	$captureImg = '<img id="'+$UID+'" src="'+$tomnodCaptureURL+'" id="" >';
-	$("#captures").prepend($captureImg);
-	addImageListeners();
-	//console.log('Taking Screen Shot of [lat]:'+lat+' | [lng]:'+lng+' at: ' + tomnodCaptureURL);
+		$captures.push($captureObj);
+		console.log($captureObj);
+
+
+		var preloadImg = new Image();
+	  preloadImg.src = $tomnodCaptureURL,
+	  preloadImg.id  = $UID;
+	  $captureImg = '<img id="'+$UID+'" src="css/images/loading.gif" id="" >';
+		setTimeout(function(){
+			console.log('Changing Image');
+			console.log(preloadImg);
+			$("#captures img").eq(0).remove();
+			$("#captures").prepend(preloadImg);
+			allowScreenCapture = true;
+			addImageListeners();
+		},5000);
+		$("#captures").prepend($captureImg);
+		if(toggleCaptures === true){
+			$("#captures").slideToggle( "slow", function() {
+			    toggleCaptures = false;
+			  });
+		}
+		allowScreenCapture = false;
+		//console.log('Taking Screen Shot of [lat]:'+lat+' | [lng]:'+lng+' at: ' + tomnodCaptureURL);
+	}
 }
 
 function addImageListeners(){
 	$("#captures img").off();
 	$("#captures img").on( "click", function() {
 		selectedImgID = $(this).attr('id');
-		
-		/*
+		selectedImgSrc = $(this).attr('src');
+		console.log('[selectedImgID]'+selectedImgID);
+
 		$.magnificPopup.open({
 	  items: {
-	    src: $src
+	    src: selectedImgSrc
 	  },
 	  type: 'image'
 		});
-		*/
 
+		/*
 		var tempArr = [];
 		for(i=($captures.length - 1);i>-1;i--){
 			var tempObj = {
+				UID: $captures[i].ID,
 				src: $captures[i].URL
 			}
 			tempArr.push(tempObj);			
@@ -47,10 +80,18 @@ function addImageListeners(){
 		$.magnificPopup.open({
 		    items: tempArr,
 		    gallery: {
-		      enabled: true
+		      enabled: false
 		    },
+		    callbacks: {
+				  open: function() {
+				   	console.log('Opened');
+				    loadSelections(this.currItem.data.UID);
+				  }
+			    // e.t.c.
+			  },
 		    type: 'image' 
 		});
+		*/
 		$('figure').xselectable();
 		loadSelections(selectedImgID);
 	});
@@ -69,44 +110,38 @@ function storeSelections(selections){
 }
 
 function loadSelections(imgID){
+
+
+
 	console.log('Loading selections from local storage for img:'+imgID);
 	for(i=0;i<localStorage.length;i++){
-		console.log(localStorage.getItem(localStorage.key(i)));
+		$currentSelection = localStorage.getItem(localStorage.key(i));
+		$currentSelection = JSON.parse($currentSelection);
+		if($currentSelection.imgID == imgID){
+			console.log('Match with: '+$currentSelection.imgID);
+			createSelection($currentSelection);
+		}
+		
 	}
 }
 
 function createSelection(selection){
-	/*
-	$('.xselectable-glass').each(function(index){
-      $(this).remove();      
-    });
+  console.log('Creating Selection');
+  $selection = $(
+  '<div />', {
+    'class': 'xselectable-box',
+    'id'   : selection.uid
+  }).css({
+  'position': 'absolute',
+  'top': selection.top,
+  'left': selection.left,
+  'height': selection.height,
+  'width': selection.width,
+  'overflow': 'hidden'}).appendTo("figure");   
+}
 
-    for(i=0;i<selectionsArr.length;i++){
-      $uid = Date.now();
-      $currentSelection = selectionsArr[i];
-      $selection = $(
-      '<div />', {
-        'class': 'xselectable-box',
-        'id'   : $currentSelection.uid
-      }).css({
-      'position': 'absolute',
-      'top': $currentSelection.top,
-      'left': $currentSelection.left,
-      'height': $currentSelection.height,
-      'width': $currentSelection.width,
-      'overflow': 'hidden'}).appendTo("figure");   
-    }
-
-
-    $('.xselectable-box').each(function(index){
-      $(this).click(function(){
-        $('.xselectable-box').each(function(index){
-          $(this).removeClass('xselectable-box-selected');
-        });
-        $(this).addClass('xselectable-box-selected');
-
-      });
-
-    });
-	*/
+function addListeners(){
+	$('#captureIcon').click(function(){
+		mapScreenCapture($latlng);
+	});	
 }

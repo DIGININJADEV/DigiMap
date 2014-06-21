@@ -5,102 +5,14 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
-  <link rel="stylesheet" type="text/css" media="all" href="css/magnific-popup.css" />    
+  <link rel="stylesheet" type="text/css" media="all" href="css/magnific-popup.css" />
+
+  <!-- Included JS Files -->
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-  <style>
-    html {
-      overflow-y: auto;
-      height: 100%;
-    }
-
-    body {
-      height: 98%;
-    }
-
-    H1 {
-      font-size: 1em;
-      margin-bottom: 5px;
-    }
-
-    #controls {
-      width: 38%;
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-
-
-    #map_canvas.toggled {
-      border: 1px solid #b0281a;
-    }
-
-    #map_canvas .mapControl {
-      margin: 0.5em;
-      z-index: 1200;
-      position: absolute;
-      top: 0;
-      right: 0;
-      -webkit-box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.3);
-      -moz-box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.3);
-      -moz-transition-property: all;
-      -moz-transition-duration: 0.15s;
-      -webkit-transition-property: all;
-      -webkit-transition-duration: 0.15s;
-      -o-transition-property: all;
-      -o-transition-duration: 0.15s;
-    }
-
-    #map_canvas.toggled .mapControl,
-    #map_canvas .mapControl:hover {
-      -webkit-box-shadow: 0 0 3px 4px rgba(255, 255, 255, 0.5);
-      -moz-box-shadow: 0 0 3px 4px rgba(255, 255, 255, 0.5);
-      box-shadow: 0 0 3px 4px rgba(255, 255, 255, 0.5);
-    }
-
-    .marker {
-      position: absolute;
-      background-image: url('marker.png');
-      width: 32px;
-      height: 37px;
-      margin-left: -16px;
-      margin-top: -37px;
-    }
-
-    .marker.xselectable-selected {
-      background-image: url('marker-selected.png');
-    }
-
-    .xselectable-glass {
-      background-color: transparent;
-      z-index: 1000;
-      cursor: hand;
-      cursor: pointer;
-    }
-
-    .xselectable-box {
-      border: 1px dotted black;
-      background-color: rgba(11, 178, 87, 0.5);
-      cursor: hand;
-      cursor: pointer;
-    }
-
-    .xselectable-box-selected {
-      background-color: rgba(108, 121, 223, 0.5);
-      border: 2px solid black;
-    }
-  </style>
-  <!--
-    This file uses requirejs (http://requirejs.org/) to load dependencies,
-    including the xselectable plugin. See demos/basic/basic.html and
-    demos/basic/basic_norequirejs.html on how to use the xselectable plugin with and
-    without requirejs.
-  -->
-      <!-- Included JS Files -->
-    <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="lib/jquery.magnific-popup.js"></script>
-    <script type="text/javascript" src="lib/xselectable.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+  <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.magnific-popup.js"></script>
+  <script type="text/javascript" src="lib/xselectable.js"></script>
+  <script type="text/javascript" src="script.js"></script>
     <!--  <script type="text/javascript" src="lib/require.js"></script> -->
   <script type="text/javascript">
 
@@ -137,26 +49,89 @@
         };
 
         // Initialize the Google Map.
+        $latlng = {
+          Lat: '39.9157729',
+          Lng: '-104.9838554'
+        } 
         var latlng = new google.maps.LatLng(39.9157729,-104.9838554);  // Digital Globe:22.3040407, 114.2018156
         var mapOpts = {
           zoom: 20,
           center: latlng,
-          scrollwheel: false,
+          scrollwheel: true,
           scaleControl: false,
           navigationControl: false,
-          draggable: false,
-          zoomControl: false,
-          panControl: false,
+          draggable: true,
+          zoomControl: true,
+          panControl: true,
           mapTypeId: google.maps.MapTypeId.HYBRID,
           streetViewControl: false,
           mapTypeControl: false
         };
-        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOpts);
+
+        map = new google.maps.Map(document.getElementById("map_canvas"), mapOpts);
+        /*
         google.maps.event.addListener(map, "click", function(event) {
           var lat = event.latLng.lat();
           var lng = event.latLng.lng();
           mapScreenCapture(lat,lng);
         });
+        */
+
+        /* --- Testing --- */
+        var input = /** @type {HTMLInputElement} */(
+        document.getElementById('pac-input'));
+
+        var types = document.getElementById('type-selector');
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+          map: map,
+          anchorPoint: new google.maps.Point(0, -29)
+        });
+
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        var place = autocomplete.getPlace();
+        console.log(place);
+        if (!place.geometry) {
+          return;
+        }
+
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+          map.fitBounds(place.geometry.viewport);
+        } else {
+          map.setCenter(place.geometry.location);
+          map.setZoom(25);
+        }
+       
+
+        var address = '';
+        if (place.address_components) {
+          address = [
+            (place.address_components[0] && place.address_components[0].short_name || ''),
+            (place.address_components[1] && place.address_components[1].short_name || ''),
+            (place.address_components[2] && place.address_components[2].short_name || '')
+          ].join(' ');
+        }
+
+      });
+
+      // Sets a listener on a radio button to change the filter type on Places
+      // Autocomplete.
+      function setupClickListener(id, types) {
+        var radioButton = document.getElementById(id);
+        google.maps.event.addDomListener(radioButton, 'click', function() {
+          autocomplete.setTypes(types);
+        });
+      }
+
+        /* -------------------------- */
+
         var overlay = new SelectablesOverlay(map);
 
         // Make the map selectable.
@@ -234,6 +209,7 @@
           $(ui.unselecting).data('listItem').remove();
         });
 
+        /*
         // Add a button onto the map to switch between panning and selection mode.
         var mapControl = $(
           '<div />', {'class': 'mapControl'}).
@@ -254,7 +230,7 @@
                 $(this).val('Start Selecting');
               }
             })).appendTo($('#map_canvas'));
-
+        */
         // Let the user add markers to the map based on addresses of his choice.
         var geocoder = new google.maps.Geocoder();
         $('#geocode').submit(function(evt) {
@@ -318,6 +294,7 @@
         placeholder="Enter a location">
    
     <div id="map_canvas"></div>
+    <div id="captureIcon"></div>
     <div id="captures"></div>
   </div>
 </div>  
