@@ -46,7 +46,7 @@ function buildLibrary(){
           scrollwheel: true,
           scaleControl: false,
           navigationControl: false,
-          draggable: false,
+          draggable: true,
           zoomControl: true,
           rotateControl: false,
           panControl: false,
