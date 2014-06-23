@@ -9,9 +9,10 @@ html{
   padding: 0px 
 }
 body{ 
-color:#fff;
-font-family: Arial, sans-serif;
-font-size:11px;
+color:rgba(0,0,0, 1);
+font-family: 'Raleway', sans-serif;
+font-size: 1em;
+font-weight: 200;
 line-height: 22px;
 padding:0px;
 margin:0px; 
@@ -20,23 +21,28 @@ margin:0px;
 #wrapper{
   position: relative;
   margin: 0 auto;
-  width: 1020px;
+  width: 967px;
   height: 100%;
 }
 #container{
   position: absolute;
   width: 100%;
   height: auto;
-  top: 0px;
+  top: 18px;
 }
 #captureIcon{
   position: absolute;;
-  top: 10px;
-  right: 25px;
+  top: 15px;
+  right: 6px;
   width: 64px;
-  height: 52px;
+  height: 64px;
   background-image: url("images/camera.png");
+  background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
+}
+#captureIcon:hover{
+  background-image: url("images/camera-hover.png");
 }
 #captureViewer{
   position: relative;
@@ -51,25 +57,59 @@ margin:0px;
 #captures {
   position: absolute;
   display: none;
-  bottom: 5px;
+  bottom: 4px;
   left: 5px;
-  width: 100%;
+  width: 99.4%;
   height: 200px;
+  border-top: 5px solid black;
   border-bottom-right-radius: 15px;
   border-bottom-left-radius: 15px;
-  border: 1px solid rgba(0,0,0,1);
-  background: rgba(0,0,0, .7);
-  overflow: hidden;
+  border: 3px solid rgba(0,0,0,1);
+  background: rgba(0,0,0, .85);
 }
-#captures img{
+#captures .capturedImg{
+position: relative;
+  float: left;
+  width: 200px;
+  height: auto;
+}
+#captures .capturedImg img{
   position: relative;
   float: left;
-  margin: 5px;
-  width: 190px;
-  height: 190px;
-  border: 2px ridge rgba(255,255,255,1);
-  border-radius: 5px;
+  margin: 3px;
+  width: 188px;
+  height: 188px;
+  background: rgba(0,0,0,1);
+  border: 2px groove rgba(255,255,255,.1);
+  border-radius: 10px;
   cursor: pointer;
+  opacity: .4;
+}
+#captures .capturedImg img:hover{
+  border: 2px groove rgba(255,255,255,1);
+  opacity: 1;
+}
+.activeCapture{
+  border: 2px groove rgba(255,255,255,1) !important;
+  opacity: 1 !important;
+}
+#captures .capturedImg .btn-close{
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  margin: 5px;
+  width: 24px;
+  height: 24px;
+  display: block;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  background-image: url('images/close-button-circle.png');
+  background-size: 24px 24px;
+}
+
+#captures .capturedImg .btn-close:hover{
+  background-image: url('images/close-button-circle-hover.png');
 }
 
 /********* Google Maps API Styles **************
@@ -77,8 +117,8 @@ margin:0px;
 #map_canvas {
   position: relative;
   margin: 0 auto;
-  height: 760px;
-  width: 1020px;
+  height: 720px;
+  width: 967px;
   border: 5px solid rgba(255,255,255,1);
   border-radius: 15px;  
 }
@@ -139,3 +179,29 @@ margin:0px;
   background-color: rgba(108, 121, 223, 0.5);
   border: 2px solid black;
 }
+
+/************     Zoom Styles    **************
+***********************************************/
+/* magnifying glass icon */
+figure{
+  cursor:crosshair;
+}
+.zoom:after {
+  content:'';
+  display:block; 
+  width:33px; 
+  height:33px; 
+  position:absolute; 
+  top:0;
+  right:0;
+  background:url(icon.png);
+}
+
+.zoom img {
+  display: block;
+}
+
+.zoom img::selection { background-color: transparent; }
+
+#ex2 img:hover { cursor: url(grab.cur), default; }
+#ex2 img:active { cursor: url(grabbed.cur), default; }

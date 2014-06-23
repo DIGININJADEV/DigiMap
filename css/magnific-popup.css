@@ -272,8 +272,9 @@ img.mfp-img {
     font-size: 12px;
     line-height: 14px; }
   .mfp-figure figure {
-    margin: 0; }
-
+    margin: 0;
+    max-width: 800px;
+    max-height: 800px; }
 .mfp-bottom-bar {
   margin-top: -36px;
   position: absolute;

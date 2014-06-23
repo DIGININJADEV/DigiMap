@@ -1,126 +1,37 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>DigiMap - Beta</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="css/magnific-popup.css" />    
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<head>
+  <title>DigiMap - Beta</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
 
-    <!-- Included JS Files -->
-    <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="lib/jquery.magnific-popup.js"></script>
-    <script type="text/javascript" src="lib/require.js"></script>
-    <script type="text/javascript" src="script.js"></script>
-    
-    <script>
-function initialize() {
-  var mapOptions = {
-    center: new google.maps.LatLng(39.9157729,-104.9838554),
-    zoom: 20,
-    scrollwheel: true,
-    scaleControl: true,
-    navigationControl: true,
-    draggable: true,
-    zoomControl: true,
-    panControl: true,
-    mapTypeId: google.maps.MapTypeId.HYBRID,
-    streetViewControl: false,
-    mapTypeControl: true
-  };
+  <!-- Google Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Gilda+Display|Poiret+One' rel='stylesheet' type='text/css'>
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-    mapOptions);
+  <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="css/magnific-popup.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="css/alertify.core.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="css/alertify.default.css" id="toggleCSS" />
 
-  google.maps.event.addListener(map, "click", function(event) {
-    var lat = event.latLng.lat();
-    var lng = event.latLng.lng();
-    mapScreenCapture(lat,lng);
-  });
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+  <script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.magnific-popup.js"></script>
+  <script type="text/javascript" src="lib/xselectable.js"></script>
+  <script type="text/javascript" src="lib/alertify.min.js"></script>
+  <script type="text/javascript" src="lib/jquery.zoom.js"></script>
+  <script type="text/javascript" src="script.js"></script>
+    <!--  <script type="text/javascript" src="lib/require.js"></script> -->
 
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
-
-  var types = document.getElementById('type-selector');
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-
-  var autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.bindTo('bounds', map);
-
-  var infowindow = new google.maps.InfoWindow();
-  var marker = new google.maps.Marker({
-    map: map,
-    anchorPoint: new google.maps.Point(0, -29)
-  });
-
-  google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    infowindow.close();
-    marker.setVisible(false);
-    var place = autocomplete.getPlace();
-    if (!place.geometry) {
-      return;
-    }
-
-    // If the place has a geometry, then present it on a map.
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);  // Why 17? Because it looks good.
-    }
-    marker.setIcon(/** @type {google.maps.Icon} */({
-      url: place.icon,
-      size: new google.maps.Size(71, 71),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(17, 34),
-      scaledSize: new google.maps.Size(35, 35)
-    }));
-    marker.setPosition(place.geometry.location);
-    marker.setVisible(true);
-
-    var address = '';
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
-
-    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-    infowindow.open(map, marker);
-  });
-
-  // Sets a listener on a radio button to change the filter type on Places
-  // Autocomplete.
-  function setupClickListener(id, types) {
-    var radioButton = document.getElementById(id);
-    google.maps.event.addDomListener(radioButton, 'click', function() {
-      autocomplete.setTypes(types);
-    });
-  }
-
-  
-
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-
-
-    </script>
-
-  </head>
-  <body>
-    <div id="wrapper">
-      <div id="container">
-        <input id="pac-input" class="controls" type="text"
-            placeholder="Enter a location">
-       
-        <div id="map-canvas"></div>
-        <div id="captures"></div>
-      </div>
-    </div>
-  </body>
+</head>
+<body>
+<div id="wrapper">
+  <div id="container">
+    <input id="pac-input" class="controls" type="text"
+        placeholder="Enter a location">
+   
+    <div id="map_canvas"></div>
+    <div id="captureIcon"></div>
+    <div id="captures"></div>
+  </div>
+</div>  
+</body>
 </html>
